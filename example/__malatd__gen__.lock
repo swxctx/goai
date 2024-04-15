@@ -1,0 +1,2 @@
+NOTE:
+ This `maletd gen` command only covers files with the ".gen.go" suffix if the file exists!
