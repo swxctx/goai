@@ -50,7 +50,7 @@ func TestChatStream(t *testing.T) {
 					Content: "你好，你叫什么名字？",
 				},
 			},
-		}, nil)
+		})
 	if err != nil {
 		t.Errorf("Chat: err-> %v", err)
 		return
@@ -79,5 +79,48 @@ func TestChatStream(t *testing.T) {
 			continue
 		}
 		t.Logf("resp line-> %s, len-> %d", line, len(line))
+	}
+}
+
+func TestChatStreamFormat(t *testing.T) {
+	reloadClient()
+	streamReader, err := ChatStream(
+		MODEL_FOR_35_8K,
+		&ChatRequest{
+			Messages: []MessageInfo{
+				{
+					Role:    CHAT_MESSAGE_ROLE_USER,
+					Content: "你好，你叫什么名字？",
+				},
+			},
+		})
+	if err != nil {
+		t.Errorf("Chat: err-> %v", err)
+		return
+	}
+
+	// 关闭
+	defer streamReader.Close()
+
+	// 读取流处理
+	for {
+		chatResponse, err := streamReader.ReceiveFormat()
+		if err != nil {
+			t.Errorf("err-> %v", err)
+			break
+		}
+		if streamReader.IsFinish() {
+			t.Logf("read finish...")
+			break
+		}
+		if streamReader.IsMaxEmptyLimit() {
+			t.Errorf("read empty limir...")
+			break
+		}
+
+		if chatResponse == nil {
+			continue
+		}
+		t.Logf("resp line-> %#v", chatResponse)
 	}
 }

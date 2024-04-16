@@ -3,6 +3,7 @@ package baidu
 import (
 	"bufio"
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"github.com/swxctx/ghttp"
 	"io"
@@ -68,7 +69,7 @@ func (streamReader *StreamReader) Receive() ([]byte, error) {
 	}
 
 	// 数据处理
-	parseLine := StreamDataParse(line)
+	parseLine := streamDataParse(line)
 	if len(parseLine) == 0 {
 		streamReader.emptyMsgCount++
 		// 超过最大空数据限制
@@ -82,13 +83,46 @@ func (streamReader *StreamReader) Receive() ([]byte, error) {
 	return parseLine, nil
 }
 
+// ReceiveFormat
+func (streamReader *StreamReader) ReceiveFormat() (*ChatResponse, error) {
+	// 读取数据
+	line, err := streamReader.reader.ReadBytes('\n')
+	if err != nil {
+		if err == io.EOF {
+			streamReader.isFinish = true
+			return nil, nil
+		}
+		return nil, fmt.Errorf("baidu: ChatStream ReadBytes err-> %v", err)
+	}
+
+	// 数据处理
+	parseLine := streamDataParse(line)
+	if len(parseLine) == 0 {
+		streamReader.emptyMsgCount++
+		// 超过最大空数据限制
+		if streamReader.emptyMsgCount > streamReader.maxEmptyMessageCount {
+			streamReader.maxEmptyLimit = true
+			return nil, nil
+		}
+		return nil, nil
+	}
+
+	var (
+		chatResponse *ChatResponse
+	)
+	if err := json.Unmarshal(parseLine, &chatResponse); err != nil {
+		return nil, fmt.Errorf("baidu: ChatStream data unmarshal err-> %v", err)
+	}
+	return chatResponse, nil
+}
+
 // Close
 func (streamReader *StreamReader) Close() {
 	streamReader.response.Body.Close()
 }
 
-// StreamDataParse 流式输出处理
-func StreamDataParse(line []byte) []byte {
+// streamDataParse 流式输出处理
+func streamDataParse(line []byte) []byte {
 	// 可能返回空格字符串
 	trimMsg := bytes.TrimSpace(line)
 
