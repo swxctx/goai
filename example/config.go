@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/swxctx/goai/baidu"
+	"github.com/swxctx/goai/xunfei"
 	td "github.com/swxctx/malatd"
 	"github.com/swxctx/xlog"
 	"github.com/usthooz/gconf"
@@ -30,6 +31,7 @@ func reload() {
 	if err := baidu.NewClient("apiKey", "secretKey", true); err != nil {
 		xlog.Errorf("Config: baidu.NewClient err-> %v", err)
 	}
+	xunfei.NewClient("appid", "apiKey", "apiSecret", true)
 }
 
 func init() {

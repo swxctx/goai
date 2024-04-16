@@ -33,6 +33,8 @@ func V1_Chat_Do(ctx *td.Context, arg *args.ChatDoArgsV1) (*args.ChatDoResultV1, 
 	switch arg.Platform {
 	case 1:
 		return chatBaidu(ctx, arg)
+	case 2:
+		return chatXF(ctx, arg)
 	default:
 		xlog.Errorf("V1_Chat_Do: un support platform")
 	}
