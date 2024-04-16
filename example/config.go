@@ -27,7 +27,7 @@ func reload() {
 	}
 
 	// 初始化厂商SDK
-	if err := baidu.NewClient("oR", "F4", true); err != nil {
+	if err := baidu.NewClient("apiKey", "secretKey", true); err != nil {
 		xlog.Errorf("Config: baidu.NewClient err-> %v", err)
 	}
 }
