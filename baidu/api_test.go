@@ -1,17 +1,14 @@
 package baidu
 
 import (
-	"bufio"
-	"bytes"
 	"github.com/swxctx/xlog"
-	"io"
 	"testing"
 )
 
 func reloadClient() {
 	if err := NewClient(
-		"oRH73n8pqsdfsdfdf",
-		"F45PIWIkwbcgquQsdfsdfsdfsd",
+		"apiKey",
+		"secretKey",
 		true); err != nil {
 		xlog.Errorf("NewClient: err-> %v", err)
 	}
@@ -44,7 +41,7 @@ func TestChat(t *testing.T) {
 
 func TestChatStream(t *testing.T) {
 	reloadClient()
-	resp, err := ChatStream(
+	streamReader, err := ChatStream(
 		MODEL_FOR_35_8K,
 		&ChatRequest{
 			Messages: []MessageInfo{
@@ -59,24 +56,28 @@ func TestChatStream(t *testing.T) {
 		return
 	}
 
+	// 关闭
+	defer streamReader.Close()
+
 	// 读取流处理
-	reader := bufio.NewReader(resp.Body)
 	for {
-		line, err := reader.ReadBytes('\n')
-		// 结束
-		if err == io.EOF {
-			break
-		}
+		line, err := streamReader.Receive()
 		if err != nil {
 			t.Errorf("err-> %v", err)
 			break
 		}
-		trimMsg := bytes.TrimSpace(line)
-		if len(trimMsg) == 0 {
+		if streamReader.IsFinish() {
+			t.Logf("read finish...")
+			break
+		}
+		if streamReader.IsMaxEmptyLimit() {
+			t.Errorf("read empty limir...")
+			break
+		}
+
+		if len(line) == 0 {
 			continue
 		}
 		t.Logf("resp line-> %s, len-> %d", line, len(line))
 	}
-	// 确保关闭
-	resp.Body.Close()
 }

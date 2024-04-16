@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/swxctx/ghttp"
-	"github.com/swxctx/goai"
 	"github.com/swxctx/xlog"
 	"io/ioutil"
 	"net/http"
@@ -166,7 +165,7 @@ func (c *Client) Chat(model string, chatRequest *ChatRequest) (*ChatResponse, er
 		return nil, fmt.Errorf("baidu: Chat read resp body err-> %v", err)
 	}
 	if client.debug {
-		xlog.Debugf("resp: %s", string(respBs))
+		xlog.Debugf("baidu: chat resp-> %s", string(respBs))
 	}
 
 	// unmarshal data
@@ -182,7 +181,7 @@ func (c *Client) Chat(model string, chatRequest *ChatRequest) (*ChatResponse, er
 }
 
 // ChatStream 流式对话方法
-func (c *Client) ChatStream(model string, chatRequest *ChatRequest, streamFunc goai.StreamFunc) (*ghttp.Response, error) {
+func (c *Client) ChatStream(model string, chatRequest *ChatRequest) (*StreamReader, error) {
 	if err := c.getAccessToken(); err != nil {
 		return nil, err
 	}
@@ -210,10 +209,5 @@ func (c *Client) ChatStream(model string, chatRequest *ChatRequest, streamFunc g
 	}
 
 	// 交给外部调用逻辑处理
-	if streamFunc == nil {
-		return resp, nil
-	}
-
-	// 流式数据处理接管
-	return nil, goai.StreamLogic(resp, client.maxEmptyMessageCount, streamFunc)
+	return newStreamReader(resp, client.maxEmptyMessageCount), nil
 }

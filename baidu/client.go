@@ -1,10 +1,6 @@
 package baidu
 
-import (
-	"github.com/swxctx/ghttp"
-	"github.com/swxctx/goai"
-	"github.com/swxctx/xlog"
-)
+import "github.com/swxctx/xlog"
 
 var (
 	client *Client
@@ -33,15 +29,18 @@ type Client struct {
 }
 
 // NewClient 初始化百度请求客户端
-func NewClient(apiKey, secretKey string, debug bool) error {
+func NewClient(apiKey, secretKey string, debug ...bool) error {
 	client = &Client{
 		clientId:             apiKey,
 		clientSecret:         secretKey,
-		debug:                debug,
 		baseUri:              "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/%s?access_token=%s",
 		maxEmptyMessageCount: 300,
 	}
-	if debug {
+	if len(debug) > 0 {
+		client.debug = debug[0]
+	}
+
+	if client.debug {
 		xlog.SetLevel("debug")
 	}
 
@@ -75,6 +74,6 @@ func Chat(model string, chatRequest *ChatRequest) (*ChatResponse, error) {
 }
 
 // ChatStream 流式对话接口
-func ChatStream(model string, chatRequest *ChatRequest, streamFunc goai.StreamFunc) (*ghttp.Response, error) {
-	return client.ChatStream(model, chatRequest, streamFunc)
+func ChatStream(model string, chatRequest *ChatRequest) (*StreamReader, error) {
+	return client.ChatStream(model, chatRequest)
 }
