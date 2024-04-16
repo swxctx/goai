@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/swxctx/ghttp"
+	"github.com/swxctx/goai"
 	"github.com/swxctx/xlog"
 	"io/ioutil"
 	"net/http"
@@ -181,7 +182,7 @@ func (c *Client) Chat(model string, chatRequest *ChatRequest) (*ChatResponse, er
 }
 
 // ChatStream 流式对话方法
-func (c *Client) ChatStream(model string, chatRequest *ChatRequest) (*ghttp.Response, error) {
+func (c *Client) ChatStream(model string, chatRequest *ChatRequest, streamFunc goai.StreamFunc) (*ghttp.Response, error) {
 	if err := c.getAccessToken(); err != nil {
 		return nil, err
 	}
@@ -208,5 +209,11 @@ func (c *Client) ChatStream(model string, chatRequest *ChatRequest) (*ghttp.Resp
 		return nil, fmt.Errorf("baidu: ChatStream http response code not 200, code is -> %d", resp.StatusCode)
 	}
 
-	return resp, nil
+	// 交给外部调用逻辑处理
+	if streamFunc == nil {
+		return resp, nil
+	}
+
+	// 流式数据处理接管
+	return nil, goai.StreamLogic(resp, client.maxEmptyMessageCount, streamFunc)
 }

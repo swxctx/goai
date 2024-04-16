@@ -53,7 +53,7 @@ func TestChatStream(t *testing.T) {
 					Content: "你好，你叫什么名字？",
 				},
 			},
-		})
+		}, nil)
 	if err != nil {
 		t.Errorf("Chat: err-> %v", err)
 		return

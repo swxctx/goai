@@ -2,6 +2,7 @@ package baidu
 
 import (
 	"github.com/swxctx/ghttp"
+	"github.com/swxctx/goai"
 	"github.com/swxctx/xlog"
 )
 
@@ -26,15 +27,19 @@ type Client struct {
 
 	// 是否调试模式[调试模式可以输出详细的信息]
 	debug bool
+
+	// 最大空消息数量
+	maxEmptyMessageCount int
 }
 
 // NewClient 初始化百度请求客户端
 func NewClient(apiKey, secretKey string, debug bool) error {
 	client = &Client{
-		clientId:     apiKey,
-		clientSecret: secretKey,
-		debug:        debug,
-		baseUri:      "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/%s?access_token=%s",
+		clientId:             apiKey,
+		clientSecret:         secretKey,
+		debug:                debug,
+		baseUri:              "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/%s?access_token=%s",
+		maxEmptyMessageCount: 300,
 	}
 	if debug {
 		xlog.SetLevel("debug")
@@ -54,12 +59,22 @@ func RefreshAccessToken() error {
 	return client.refreshAccessToken()
 }
 
+// SetMaxEmptyMessageCount 最大空消息数量
+func SetMaxEmptyMessageCount(count int) {
+	client.maxEmptyMessageCount = count
+}
+
+// SetDebug debug开关
+func SetDebug(debug bool) {
+	client.debug = debug
+}
+
 // Chat 对话接口
 func Chat(model string, chatRequest *ChatRequest) (*ChatResponse, error) {
 	return client.Chat(model, chatRequest)
 }
 
 // ChatStream 流式对话接口
-func ChatStream(model string, chatRequest *ChatRequest) (*ghttp.Response, error) {
-	return client.ChatStream(model, chatRequest)
+func ChatStream(model string, chatRequest *ChatRequest, streamFunc goai.StreamFunc) (*ghttp.Response, error) {
+	return client.ChatStream(model, chatRequest, streamFunc)
 }
