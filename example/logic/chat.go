@@ -12,6 +12,28 @@ import (
 	"time"
 )
 
+/**
+常规调用
+curl -X POST "http://127.0.0.1:8080/example/v1/chat/do" \
+     -H "Connection: keep-alive" \
+     -H "Content-Type: application/json" \
+     -d '{
+           "platform": 1,
+           "stream": false,
+           "content": "你好"
+         }'
+
+流式调用
+curl -N -X POST "http://127.0.0.1:8080/example/v1/chat/do" \
+     -H "Connection: keep-alive" \
+     -H "Content-Type: application/json" \
+     -d '{
+           "platform": 1,
+           "stream": true,
+           "content": "你好"
+         }'
+*/
+
 // Do handler
 func V1_Chat_Do(ctx *td.Context, arg *args.ChatDoArgsV1) (*args.ChatDoResultV1, *td.Rerror) {
 	switch arg.Platform {
@@ -63,29 +85,42 @@ func chatBaidu(ctx *td.Context, arg *args.ChatDoArgsV1) (*args.ChatDoResultV1, *
 
 	// 读取流处理
 	reader := bufio.NewReader(resp.Body)
-	for {
+	// 确保关闭
+	defer resp.Body.Close()
+
+	ctx.Stream(func(w io.Writer) bool {
+		// 读取数据
 		line, err := reader.ReadBytes('\n')
-		// 结束
-		if err == io.EOF {
-			break
-		}
 		if err != nil {
-			xlog.Errorf("chatBaidu: err-> %v", err)
-			break
+			if err != io.EOF {
+				// 记录错误，非EOF错误则终止循环
+				xlog.Errorf("chatBaidu: err-> %v", err)
+			}
+			// 返回false通知Stream停止调用
+			return false
 		}
+
 		trimMsg := bytes.TrimSpace(line)
 		if len(trimMsg) == 0 {
-			continue
+			// 如果是空行，忽略，请求继续发送下一行
+			return true
 		}
+
 		xlog.Infof("chatBaidu: line-> %s", string(line))
-		ctx.ResponseWriter.Write(line)
-		if flusher, ok := ctx.ResponseWriter.(http.Flusher); ok {
+
+		// 写入一行数据到响应体
+		w.Write(line)
+		if flusher, ok := w.(http.Flusher); ok {
+			// 确保数据发送到客户端
 			flusher.Flush()
 		}
+
+		// 暂停一秒，方便观察效果
 		time.Sleep(time.Duration(1) * time.Second)
-	}
-	// 确保关闭
-	resp.Body.Close()
+
+		// 继续处理下一行
+		return true
+	})
 
 	return new(args.ChatDoResultV1), nil
 }
