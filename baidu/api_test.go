@@ -1,8 +1,9 @@
 package baidu
 
 import (
-	"github.com/swxctx/xlog"
 	"testing"
+
+	"github.com/swxctx/xlog"
 )
 
 func reloadClient() {

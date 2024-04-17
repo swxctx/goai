@@ -2,8 +2,9 @@ package xunfei
 
 import (
 	"fmt"
-	"github.com/gorilla/websocket"
 	"strings"
+
+	"github.com/gorilla/websocket"
 )
 
 type StreamReader struct {

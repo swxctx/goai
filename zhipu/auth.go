@@ -2,9 +2,10 @@ package zhipu
 
 import (
 	"fmt"
-	"github.com/dgrijalva/jwt-go"
 	"strings"
 	"time"
+
+	"github.com/dgrijalva/jwt-go"
 )
 
 // getAuthToken 获取token

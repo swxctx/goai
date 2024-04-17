@@ -3,10 +3,11 @@ package baidu
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/swxctx/ghttp"
-	"github.com/swxctx/xlog"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/swxctx/ghttp"
+	"github.com/swxctx/xlog"
 )
 
 /**

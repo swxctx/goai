@@ -5,9 +5,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/swxctx/ghttp"
 	"io"
 	"strings"
+
+	"github.com/swxctx/ghttp"
 )
 
 type StreamReader struct {

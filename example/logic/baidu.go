@@ -1,13 +1,14 @@
 package logic
 
 import (
+	"io"
+	"net/http"
+	"time"
+
 	"github.com/swxctx/goai/baidu"
 	"github.com/swxctx/goai/example/args"
 	td "github.com/swxctx/malatd"
 	"github.com/swxctx/xlog"
-	"io"
-	"net/http"
-	"time"
 )
 
 func chatBaidu(ctx *td.Context, arg *args.ChatDoArgsV1) (*args.ChatDoResultV1, *td.Rerror) {
