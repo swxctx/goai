@@ -12,7 +12,7 @@ import (
 // chatXF
 func chatXF(ctx *td.Context, arg *args.ChatDoArgsV1) (*args.ChatDoResultV1, *td.Rerror) {
 	// 正常输出
-	streamReader, err := xunfei.Chat(&xunfei.ChatRequest{
+	streamReader, err := xunfei.ChatStream(&xunfei.ChatRequest{
 		Messages: []xunfei.MessageInfo{
 			{
 				Role:    xunfei.CHAT_MESSAGE_ROLE_USER,

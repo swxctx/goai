@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/swxctx/goai/baidu"
 	"github.com/swxctx/goai/xunfei"
+	"github.com/swxctx/goai/zhipu"
 	td "github.com/swxctx/malatd"
 	"github.com/swxctx/xlog"
 	"github.com/usthooz/gconf"
@@ -28,10 +29,14 @@ func reload() {
 	}
 
 	// 初始化厂商SDK
+	// 百度AI
 	if err := baidu.NewClient("apiKey", "secretKey", true); err != nil {
 		xlog.Errorf("Config: baidu.NewClient err-> %v", err)
 	}
+	// 讯飞星火
 	xunfei.NewClient("appid", "apiKey", "apiSecret", true)
+	// 智谱AI
+	zhipu.NewClient("apiKey", true)
 }
 
 func init() {
