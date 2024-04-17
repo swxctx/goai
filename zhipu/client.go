@@ -37,7 +37,7 @@ func NewClient(apiKey string, debug ...bool) error {
 	client = &Client{
 		apiKey:               apiKey,
 		baseUri:              "https://open.bigmodel.cn/api/paas/v4/chat/completions",
-		maxEmptyMessageCount: 300,
+		maxEmptyMessageCount: 900,
 		expSeconds:           3600,
 	}
 	if len(debug) > 0 {
@@ -82,8 +82,7 @@ func Chat(chatRequest *ChatRequest) (*ChatResponse, error) {
 	return client.Chat(chatRequest)
 }
 
-/*
 // ChatStream 流式对话接口
-func ChatStream(model string, chatRequest *ChatRequest) (*StreamReader, error) {
-	return client.ChatStream(model, chatRequest)
-}*/
+func ChatStream(chatRequest *ChatRequest) (*StreamReader, error) {
+	return client.ChatStream(chatRequest)
+}

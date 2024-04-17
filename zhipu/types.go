@@ -69,6 +69,8 @@ type Choices struct {
 	FinishReason string `json:"finish_reason"`
 	// 模型返回的文本信息
 	Message MessageInfo `json:"message"`
+	// 流式输出是使用这个字段
+	Delta MessageInfo `json:"delta"`
 }
 
 // Usage
