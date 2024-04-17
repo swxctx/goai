@@ -159,17 +159,17 @@ type ChoiceText struct {
 
 // UsagePayload
 type UsagePayload struct {
-	Text UsageInfo `json:"text"`
+	Text Usage `json:"text"`
 }
 
-// UsageInfo
-type UsageInfo struct {
+// Usage
+type Usage struct {
 	// 提问消耗tokens
-	QuestionTokens int `json:"question_tokens"`
+	QuestionTokens int64 `json:"question_tokens"`
 	// 包含历史问题的总tokens大小
-	PromptTokens int `json:"prompt_tokens"`
+	PromptTokens int64 `json:"prompt_tokens"`
 	// 回答的tokens大小
-	CompletionTokens int `json:"completion_tokens"`
+	CompletionTokens int64 `json:"completion_tokens"`
 	// prompt_tokens和completion_tokens的和，也是本次交互计费的tokens大小
-	TotalTokens int `json:"total_tokens"`
+	TotalTokens int64 `json:"total_tokens"`
 }

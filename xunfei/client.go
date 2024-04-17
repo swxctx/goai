@@ -58,7 +58,7 @@ func SetDebug(debug bool) {
 	client.debug = debug
 }
 
-// Chat 对话调用
-func Chat(chatRequest *ChatRequest) (*StreamReader, error) {
-	return client.Chat(chatRequest)
+// ChatStream 对话调用
+func ChatStream(chatRequest *ChatRequest) (*StreamReader, error) {
+	return client.ChatStream(chatRequest)
 }

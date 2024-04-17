@@ -5,7 +5,7 @@ import "testing"
 func TestChat(t *testing.T) {
 	NewClient("appid", "apiKey", "apiSecret", true)
 	// 调用Chat
-	streamReader, err := Chat(&ChatRequest{
+	streamReader, err := ChatStream(&ChatRequest{
 		Messages: []MessageInfo{
 			{
 				Role:    CHAT_MESSAGE_ROLE_USER,
@@ -39,7 +39,7 @@ func TestChat(t *testing.T) {
 func TestChatFormat(t *testing.T) {
 	NewClient("appid", "apiKey", "apiSecret", true)
 	// 调用Chat
-	streamReader, err := Chat(&ChatRequest{
+	streamReader, err := ChatStream(&ChatRequest{
 		Messages: []MessageInfo{
 			{
 				Role:    CHAT_MESSAGE_ROLE_USER,

@@ -15,8 +15,8 @@ type ChatRequest struct {
 	ChatParameter RequestParameterChat
 }
 
-// Chat 讯飞对话接口
-func (c *Client) Chat(chatRequest *ChatRequest) (*StreamReader, error) {
+// ChatStream 讯飞对话接口
+func (c *Client) ChatStream(chatRequest *ChatRequest) (*StreamReader, error) {
 	// 处理请求域
 	requestUrl := fmt.Sprintf(c.baseUri, model_api_map[chatRequest.ChatParameter.Domain])
 
