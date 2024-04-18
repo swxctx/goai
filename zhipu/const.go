@@ -9,6 +9,9 @@ const (
 
 	// CHAT_MESSAGE_ROLE_SYSTEM 对话背景
 	CHAT_MESSAGE_ROLE_SYSTEM string = "system"
+
+	// CHAT_MESSAGE_ROLE_TOOL 工具调用
+	CHAT_MESSAGE_ROLE_TOOL string = "tools"
 )
 
 const (
