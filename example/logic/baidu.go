@@ -1,14 +1,12 @@
 package logic
 
 import (
-	"io"
-	"net/http"
-	"time"
-
 	"github.com/swxctx/goai/baidu"
 	"github.com/swxctx/goai/example/args"
 	td "github.com/swxctx/malatd"
 	"github.com/swxctx/xlog"
+	"io"
+	"net/http"
 )
 
 func chatBaidu(ctx *td.Context, arg *args.ChatDoArgsV1) (*args.ChatDoResultV1, *td.Rerror) {
@@ -20,7 +18,7 @@ func chatBaidu(ctx *td.Context, arg *args.ChatDoArgsV1) (*args.ChatDoResultV1, *
 				Messages: []baidu.MessageInfo{
 					{
 						Role:    baidu.CHAT_MESSAGE_ROLE_USER,
-						Content: "你好",
+						Content: arg.Content,
 					},
 				},
 			})
@@ -45,7 +43,7 @@ func chatBaiduStream(ctx *td.Context, arg *args.ChatDoArgsV1) (*args.ChatDoResul
 			Messages: []baidu.MessageInfo{
 				{
 					Role:    baidu.CHAT_MESSAGE_ROLE_USER,
-					Content: "你好",
+					Content: arg.Content,
 				},
 			},
 		})
@@ -56,7 +54,7 @@ func chatBaiduStream(ctx *td.Context, arg *args.ChatDoArgsV1) (*args.ChatDoResul
 
 	defer streamReader.Close()
 	ctx.Stream(func(w io.Writer) bool {
-		line, err := streamReader.Receive()
+		data, err := streamReader.ReceiveFormat()
 		if err != nil {
 			xlog.Errorf("chatBaidu: Receive err-> %v", err)
 			return false
@@ -69,26 +67,25 @@ func chatBaiduStream(ctx *td.Context, arg *args.ChatDoArgsV1) (*args.ChatDoResul
 			xlog.Infof("chatBaidu: empty line limit...")
 			return false
 		}
-		if len(line) == 0 {
+		if data == nil {
 			xlog.Infof("chatBaidu: line is empty...")
 			return true
 		}
 
-		xlog.Infof("chatBaidu: line-> %s", string(line))
+		xlog.Infof("resp: data-> %#v", data)
 
 		// 写入一行数据到响应体
-		w.Write(line)
+		w.Write(streamResponse(data.Result))
 		if flusher, ok := w.(http.Flusher); ok {
 			// 确保数据发送到客户端
 			flusher.Flush()
 		}
 
-		// 暂停一秒，方便观察效果
-		time.Sleep(time.Duration(1) * time.Second)
-
 		// 继续处理下一行
 		return true
 	})
 
-	return new(args.ChatDoResultV1), nil
+	return &args.ChatDoResultV1{
+		Message: STREAM_DONE_FLAG,
+	}, nil
 }

@@ -17,7 +17,7 @@ func chatAli(ctx *td.Context, arg *args.ChatDoArgsV1) (*args.ChatDoResultV1, *td
 		resp, err := aliyun.Chat(&aliyun.ChatRequest{
 			Model: aliyun.MODEL_VERSION_TURBO,
 			Input: aliyun.Input{
-				Prompt: "你好",
+				Prompt: arg.Content,
 			},
 			Parameters: aliyun.Parameters{
 				ResultFormat: aliyun.RESULT_FORMAT_MESSAGE,
@@ -41,7 +41,7 @@ func chatAliStream(ctx *td.Context, arg *args.ChatDoArgsV1) (*args.ChatDoResultV
 	streamReader, err := aliyun.ChatStream(&aliyun.ChatRequest{
 		Model: aliyun.MODEL_VERSION_TURBO,
 		Input: aliyun.Input{
-			Prompt: "你好",
+			Prompt: arg.Content,
 		},
 		Parameters: aliyun.Parameters{
 			ResultFormat:      aliyun.RESULT_FORMAT_MESSAGE,
@@ -55,7 +55,7 @@ func chatAliStream(ctx *td.Context, arg *args.ChatDoArgsV1) (*args.ChatDoResultV
 
 	defer streamReader.Close()
 	ctx.Stream(func(w io.Writer) bool {
-		line, err := streamReader.Receive()
+		data, err := streamReader.ReceiveFormat()
 		if err != nil {
 			xlog.Errorf("chatAliStream: Receive err-> %v", err)
 			return false
@@ -68,15 +68,15 @@ func chatAliStream(ctx *td.Context, arg *args.ChatDoArgsV1) (*args.ChatDoResultV
 			xlog.Infof("chatAliStream: empty line limit...")
 			return false
 		}
-		if len(line) == 0 {
+		if data == nil {
 			xlog.Infof("chatAliStream: line is empty...")
 			return true
 		}
 
-		xlog.Infof("chatAliStream: line-> %s", string(line))
+		xlog.Infof("resp: data-> %#v", data)
 
 		// 写入一行数据到响应体
-		w.Write(line)
+		w.Write(streamResponse(data.Output.Choices[0].Message.Content))
 		if flusher, ok := w.(http.Flusher); ok {
 			// 确保数据发送到客户端
 			flusher.Flush()
@@ -86,5 +86,7 @@ func chatAliStream(ctx *td.Context, arg *args.ChatDoArgsV1) (*args.ChatDoResultV
 		return true
 	})
 
-	return new(args.ChatDoResultV1), nil
+	return &args.ChatDoResultV1{
+		Message: STREAM_DONE_FLAG,
+	}, nil
 }

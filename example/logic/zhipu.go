@@ -19,7 +19,7 @@ func chatZP(ctx *td.Context, arg *args.ChatDoArgsV1) (*args.ChatDoResultV1, *td.
 			Messages: []zhipu.MessageInfo{
 				{
 					Role:    zhipu.CHAT_MESSAGE_ROLE_USER,
-					Content: "你好",
+					Content: arg.Content,
 				},
 			},
 		})
@@ -43,7 +43,7 @@ func chatZPStream(ctx *td.Context, arg *args.ChatDoArgsV1) (*args.ChatDoResultV1
 		Messages: []zhipu.MessageInfo{
 			{
 				Role:    zhipu.CHAT_MESSAGE_ROLE_USER,
-				Content: "你好",
+				Content: arg.Content,
 			},
 		},
 	})
@@ -54,7 +54,7 @@ func chatZPStream(ctx *td.Context, arg *args.ChatDoArgsV1) (*args.ChatDoResultV1
 
 	defer streamReader.Close()
 	ctx.Stream(func(w io.Writer) bool {
-		line, err := streamReader.Receive()
+		data, err := streamReader.ReceiveFormat()
 		if err != nil {
 			xlog.Errorf("chatZPStream: Receive err-> %v", err)
 			return false
@@ -67,15 +67,15 @@ func chatZPStream(ctx *td.Context, arg *args.ChatDoArgsV1) (*args.ChatDoResultV1
 			xlog.Infof("chatZPStream: empty line limit...")
 			return false
 		}
-		if len(line) == 0 {
+		if data == nil {
 			xlog.Infof("chatZPStream: line is empty...")
 			return true
 		}
 
-		xlog.Infof("chatZPStream: line-> %s", string(line))
+		xlog.Infof("resp: data-> %#v", data)
 
 		// 写入一行数据到响应体
-		w.Write(line)
+		w.Write(streamResponse(data.Choices[0].Message.Content))
 		if flusher, ok := w.(http.Flusher); ok {
 			// 确保数据发送到客户端
 			flusher.Flush()
@@ -85,5 +85,7 @@ func chatZPStream(ctx *td.Context, arg *args.ChatDoArgsV1) (*args.ChatDoResultV1
 		return true
 	})
 
-	return new(args.ChatDoResultV1), nil
+	return &args.ChatDoResultV1{
+		Message: STREAM_DONE_FLAG,
+	}, nil
 }

@@ -17,7 +17,7 @@ func chatXF(ctx *td.Context, arg *args.ChatDoArgsV1) (*args.ChatDoResultV1, *td.
 		Messages: []xunfei.MessageInfo{
 			{
 				Role:    xunfei.CHAT_MESSAGE_ROLE_USER,
-				Content: "你好",
+				Content: arg.Content,
 			},
 		},
 		ChatParameter: xunfei.RequestParameterChat{
@@ -32,7 +32,7 @@ func chatXF(ctx *td.Context, arg *args.ChatDoArgsV1) (*args.ChatDoResultV1, *td.
 	defer streamReader.Close()
 
 	ctx.Stream(func(w io.Writer) bool {
-		line, err := streamReader.Receive()
+		data, err := streamReader.ReceiveFormat()
 		if err != nil {
 			xlog.Errorf("chatXF: Receive err-> %v", err)
 			return false
@@ -41,15 +41,15 @@ func chatXF(ctx *td.Context, arg *args.ChatDoArgsV1) (*args.ChatDoResultV1, *td.
 			xlog.Infof("chatXF: receive finish...")
 			return false
 		}
-		if len(line) == 0 {
+		if data == nil {
 			xlog.Infof("chatXF: line is empty...")
 			return true
 		}
 
-		xlog.Infof("chatXF: line-> %s", string(line))
+		xlog.Infof("resp: data-> %#v", data)
 
 		// 写入一行数据到响应体
-		w.Write(line)
+		w.Write(streamResponse(data.Payload.Choices.Content))
 		if flusher, ok := w.(http.Flusher); ok {
 			// 确保数据发送到客户端
 			flusher.Flush()
@@ -58,5 +58,8 @@ func chatXF(ctx *td.Context, arg *args.ChatDoArgsV1) (*args.ChatDoResultV1, *td.
 		// 继续处理下一行
 		return true
 	})
-	return new(args.ChatDoResultV1), nil
+
+	return &args.ChatDoResultV1{
+		Message: STREAM_DONE_FLAG,
+	}, nil
 }
