@@ -32,7 +32,7 @@ func TestChat(t *testing.T) {
 }
 ```
 
-- 流式输出调用
+#### 流式输出调用
 
 ```go
 func TestChatStream(t *testing.T) {
@@ -77,7 +77,7 @@ func TestChatStream(t *testing.T) {
 }
 ```
 
-- 与HTTP Web框架结合使用
+#### 与HTTP Web框架结合使用
 
 ```go
 streamReader, err := aliyun.ChatStream(&aliyun.ChatRequest{
