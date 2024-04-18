@@ -6,6 +6,7 @@ Golang版本各厂商AI OpenAPI调用封装
 - [讯飞星火](https://github.com/swxctx/goai/tree/main/xunfei)
 - [智谱AI](https://github.com/swxctx/goai/tree/main/zhipu)
 - [使用示例Web程序](https://github.com/swxctx/goai/tree/main/example)
+- [Android端调用example api示例](https://github.com/swxctx/aiStream)
 
 
 #### 普通调用
