@@ -1,0 +1,46 @@
+package aliyun
+
+const (
+	// CHAT_MESSAGE_ROLE_USER 用户
+	CHAT_MESSAGE_ROLE_USER string = "user"
+
+	// CHAT_MESSAGE_ROLE_ASSISTANT 对话助手
+	CHAT_MESSAGE_ROLE_ASSISTANT string = "assistant"
+
+	// CHAT_MESSAGE_ROLE_SYSTEM 对话背景
+	CHAT_MESSAGE_ROLE_SYSTEM string = "system"
+
+	// CHAT_MESSAGE_ROLE_TOOL 工具调用
+	CHAT_MESSAGE_ROLE_TOOL string = "tools"
+)
+
+const (
+	// MODEL_VERSION_TURBO
+	MODEL_VERSION_TURBO = "qwen-turbo"
+
+	// MODEL_VERSION_PLUS
+	MODEL_VERSION_PLUS = "qwen-plus"
+
+	// MODEL_VERSION_MAX
+	MODEL_VERSION_MAX = "qwen-max"
+
+	// MODEL_VERSION_MAX_0403
+	MODEL_VERSION_MAX_0403 = "qwen-max-0403"
+
+	// MODEL_VERSION_MAX_0107
+	MODEL_VERSION_MAX_0107 = "qwen-max-0107"
+
+	// MODEL_VERSION_MAX_1201
+	MODEL_VERSION_MAX_1201 = "qwen-max-1201"
+
+	// MODEL_VERSION_MAX_LONGTEXT
+	MODEL_VERSION_MAX_LONGTEXT = "qwen-max-longcontext"
+)
+
+const (
+	// RESULT_FORMAT_TEXT 旧版format
+	RESULT_FORMAT_TEXT = "text"
+
+	// RESULT_FORMAT_MESSAGE 兼容openai的message
+	RESULT_FORMAT_MESSAGE = "message"
+)
