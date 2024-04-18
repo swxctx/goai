@@ -18,3 +18,11 @@ const (
 	// MODEL_VERSION_3
 	MODEL_VERSION_3 = "glm-3-turbo"
 )
+
+const (
+	// TOOLS_TYPE_FOR_RETRIEVAL 知识库类型
+	TOOLS_TYPE_FOR_RETRIEVAL = "retrieval"
+
+	// TOOLS_TYPE_FOR_WEB_SEARCH 联网搜索
+	TOOLS_TYPE_FOR_WEB_SEARCH = "web_search"
+)

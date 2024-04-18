@@ -20,8 +20,38 @@ type ChatRequest struct {
 	MaxTokens int64 `json:"max_tokens,omitempty"`
 	// 模型在遇到stop所制定的字符时将停止生成，目前仅支持单个停止词，格式为["stop_word1"]
 	Stop []string `json:"stop,omitempty"`
+	// 可供模型调用的工具列表,tools字段会计算 tokens ，同样受到tokens长度的限制
+	Tools []ToolsInfo `json:"tools,omitempty"`
 	// 终端用户的唯一ID，协助平台对终端用户的违规行为、生成违法及不良信息或其他滥用行为进行干预。ID长度要求：最少6个字符，最多128个字符。
 	UserId string `json:"user_id,omitempty"`
+}
+
+// ToolsInfo
+type ToolsInfo struct {
+	/*
+		工具类型
+		retrieval: 知识库
+		web_search: 联网搜索
+	*/
+	Type string `json:"type"`
+	// 知识库使用
+	Retrieval RetrievalInfo `json:"retrieval"`
+}
+
+// RetrievalInfo
+type RetrievalInfo struct {
+	// 知识库ID
+	KnowledgeId string `json:"knowledge_id"`
+	// 请求模型时的知识库模板
+	PromptTemplate string `json:"prompt_template,omitempty"`
+}
+
+// WebSearch
+type WebSearch struct {
+	// 是否启用搜索，默认弃用
+	Enable bool `json:"enable,omitempty"`
+	// 强制搜索自定义关键内容，此时模型会根据自定义搜索关键内容返回的结果作为背景知识来回答用户发起的对话。
+	SearchQuery string `json:"search_query"`
 }
 
 // MessageInfo 对话消息结构体
