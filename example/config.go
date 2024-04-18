@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/swxctx/goai/aliyun"
 	"github.com/swxctx/goai/baidu"
 	"github.com/swxctx/goai/xunfei"
 	"github.com/swxctx/goai/zhipu"
@@ -37,6 +38,8 @@ func reload() {
 	xunfei.NewClient("appid", "apiKey", "apiSecret", true)
 	// 智谱AI
 	zhipu.NewClient("apiKey", true)
+	// 阿里云通义千问
+	aliyun.NewClient("apiKey", true)
 }
 
 func init() {
