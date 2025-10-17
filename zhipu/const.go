@@ -29,3 +29,19 @@ const (
 	// TOOLS_TYPE_FOR_WEB_SEARCH 联网搜索
 	TOOLS_TYPE_FOR_WEB_SEARCH = "web_search"
 )
+
+// MessageContentType 定义消息内容类型常量
+const (
+	MessageContentTypeInput         = "input"          // 文本输入
+	MessageContentTypeUploadFile    = "upload_file"    // 上传文件
+	MessageContentTypeUploadAudio   = "upload_audio"   // 上传音频
+	MessageContentTypeUploadImage   = "upload_image"   // 上传图片
+	MessageContentTypeUploadVideo   = "upload_video"   // 上传视频
+	MessageContentTypeSelectionList = "selection_list" // 可选项下拉框
+)
+
+const (
+	MessageSceneTypeText         = "text"          // 默认，普通问答场景
+	MessageSceneTypeComputerCall = "computer_call" // cogagent 节点回复场景
+	MessageSceneTypeQA           = "qa"            // 问答节点回复场景
+)

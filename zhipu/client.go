@@ -15,6 +15,9 @@ type Client struct {
 	// 基础请求api
 	baseUri string
 
+	// 智能体请求
+	botUri string
+
 	// API Key
 	apiKey string
 
@@ -37,6 +40,7 @@ func NewClient(apiKey string, debug ...bool) error {
 	client = &Client{
 		apiKey:               apiKey,
 		baseUri:              "https://open.bigmodel.cn/api/paas/v4/chat/completions",
+		botUri:               "https://open.bigmodel.cn/api/llm-application/open",
 		maxEmptyMessageCount: 900,
 		expSeconds:           3600,
 	}
@@ -85,4 +89,19 @@ func Chat(chatRequest *ChatRequest) (*ChatResponse, error) {
 // ChatStream 流式对话接口
 func ChatStream(chatRequest *ChatRequest) (*StreamReader, error) {
 	return client.ChatStream(chatRequest)
+}
+
+// BotCreateConversation 创建智能体会话
+func BotCreateConversation(appId string) (*BotCreateConversationResp, error) {
+	return client.BotCreateConversation(appId)
+}
+
+// BotChat 智能体对话接口
+func BotChat(chatRequest *BotChatRequest) (*BotChatResponse, error) {
+	return client.BotChat(chatRequest)
+}
+
+// BotChatStream 智能体流式对话接口
+func BotChatStream(chatRequest *BotChatRequest) (*StreamReader, error) {
+	return client.BotChatStream(chatRequest)
 }
