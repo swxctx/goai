@@ -17,7 +17,7 @@ type BotChatRequest struct {
 	AppID          string            `json:"app_id"`                     // 应用id（必传）
 	ConversationID string            `json:"conversation_id,omitempty"`  // 会话id，未传则默认创建新的会话
 	ThirdRequestID string            `json:"third_request_id,omitempty"` // 三方请求id
-	Stream         bool              `json:"stream,omitempty"`           // 默认true，false时为同步调用
+	Stream         bool              `json:"stream"`                     // 默认true，false时为同步调用
 	Messages       []BotMessage      `json:"messages"`                   // 用户输入列表（必传）
 	DocumentIDs    []string          `json:"document_ids,omitempty"`     // 问答类应用使用的文档ID集合
 	KnowledgeIDs   []string          `json:"knowledge_ids,omitempty"`    // 问答类应用使用的知识ID集合

@@ -78,21 +78,21 @@ func (c *Client) BotChat(chatRequest *BotChatRequest) (*BotChatResponse, error) 
 	// send request
 	resp, err := req.Do()
 	if err != nil {
-		return nil, fmt.Errorf("zhipu: BotChatStream err, err is-> %v", err)
+		return nil, fmt.Errorf("zhipu: BotChat err, err is-> %v", err)
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("zhipu: BotChatStream http response code not 200, code is -> %d", resp.StatusCode)
+		return nil, fmt.Errorf("zhipu: BotChat http response code not 200, code is -> %d", resp.StatusCode)
 	}
 	defer resp.Body.Close()
 
 	// read body
 	respBs, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return nil, fmt.Errorf("zhipu: BotChatStream read resp body err-> %v", err)
+		return nil, fmt.Errorf("zhipu: BotChat read resp body err-> %v", err)
 	}
 	if client.debug {
-		xlog.Debugf("zhipu: BotChatStream resp-> %s", string(respBs))
+		xlog.Debugf("zhipu: BotChat resp-> %s", string(respBs))
 	}
 
 	var (
@@ -102,7 +102,7 @@ func (c *Client) BotChat(chatRequest *BotChatRequest) (*BotChatResponse, error) 
 	// unmarshal data
 	err = json.Unmarshal(respBs, &chatResp)
 	if err != nil {
-		return nil, fmt.Errorf("zhipu: BotChatStream data unmarshal err-> %v", err)
+		return nil, fmt.Errorf("zhipu: BotChat data unmarshal err-> %v", err)
 	}
 	return chatResp, nil
 }
