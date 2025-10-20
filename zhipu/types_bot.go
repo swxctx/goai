@@ -74,7 +74,7 @@ type MessageDelta struct {
 type MessageData struct {
 	Type     string      `json:"type"`                // text, image, video, all_tools, qa, computer_call
 	Msg      interface{} `json:"msg,omitempty"`       // 根据type不同对应不同结构
-	NodeID   string      `json:"node_id,omitempty"`   // 节点id
+	NodeID   interface{} `json:"node_id,omitempty"`   // 节点id
 	NodeName string      `json:"node_name,omitempty"` // 节点名称
 }
 
