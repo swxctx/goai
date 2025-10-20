@@ -48,20 +48,20 @@ type NodeDocumentMap struct {
 
 // BotChatResponse 智能体接口返回结构
 type BotChatResponse struct {
-	ReqID          string          `json:"req_id"`              // 请求id
-	ConversationID string          `json:"conversation_id"`     // 会话id
-	AppID          string          `json:"app_id"`              // 智能体id
-	Choices        []Choice        `json:"choices,omitempty"`   // 增量返回信息
-	Messages       *SyncMessages   `json:"messages,omitempty"`  // 同步调用结果
-	Usage          []OpenUsageData `json:"usage,omitempty"`     // tokens统计
-	ErrorMsg       *ErrorCode      `json:"error_msg,omitempty"` // 异常信息
+	ReqID          string     `json:"req_id"`              // 请求id
+	ConversationID string     `json:"conversation_id"`     // 会话id
+	AppID          string     `json:"app_id"`              // 智能体id
+	Choices        []Choice   `json:"choices,omitempty"`   // 增量返回信息
+	ErrorMsg       *ErrorCode `json:"error_msg,omitempty"` // 异常信息
 }
 
 // Choice 模型增量返回的单个结果
 type Choice struct {
-	Index        int           `json:"index"`                   // 结果下标
-	FinishReason string        `json:"finish_reason,omitempty"` // stop/error
-	Delta        *MessageDelta `json:"delta,omitempty"`         // 当前会话输出消息体
+	Index        int             `json:"index"`                   // 结果下标
+	FinishReason string          `json:"finish_reason,omitempty"` // stop/error
+	Messages     *SyncMessages   `json:"messages,omitempty"`      // 同步调用结果
+	Usage        []OpenUsageData `json:"usage,omitempty"`         // tokens统计
+	Delta        *MessageDelta   `json:"delta,omitempty"`         // 当前会话输出消息体
 }
 
 // MessageDelta 模型增量消息
